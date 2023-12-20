@@ -73,7 +73,7 @@ class Solution:
             #     new_list2.add(c1)
                 mapping_list[index2_to_insert] = new_list3
                 mapping_dict[c2] = index2_to_insert
-                
+
                 print(new_list1, new_list2, new_list3, mapping_dict)
 
             print(c1, c2, mapping_list, '\n')
