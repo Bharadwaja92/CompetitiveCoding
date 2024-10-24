@@ -1,0 +1,99 @@
+00000, 00001, 00002, ..., 99999,
+A0000, A0001, ..., A9999, B0000, ..., Z9999,
+AA000, AA001, ..., AA999, AB000, ..., ZZ999,
+AAA00, ..., ZZZ99,
+AAAA0, ..., ZZZZ9,
+AAAAA, ..., ZZZZZ
+
+
+SERIES1 -- 10**5
+SERIES2 -- 26 * 10**4
+SERIES3 -- 26**2 * 10**3
+
+SERIES_I  ==> 26**(5-I) * 10**I
+
+
+GIVEN: BC123 -> what is i? 
+Need to find when B comes in the 0th index
+
+x = 10**5 + (26 * 10**4)
+B first comes in 0th index at i = X + 26001     
+
+A is fixed--> 2nd char is going from A thru Z
+3rd char --> 0 to 9 for 1000 numbers 
+AA000 ---> AZ999 -> 26000 NUMBERS
+BA000 --> BA999 --> BB000 ---> BB999 -> BC000 --> 2000 -->
+BC000 
+
+B0000 --> 26000
+BC123 --> 26000 + 2000 + 123
+
+10**5 + (26 * 10**4) + 28123 --> bc123
+
+
+
+
+alpha(i): Returns i as a base-26 number string
+alpha(0)        -> 'A'
+alpha(1)        -> 'B'
+alpha(25)       -> 'Z'
+alpha(26)       -> 'BA'
+alpha(77936330) -> 'GOOGLE'
+pad(width, padding, value): Pads the value with leading padding characters, to the given width
+
+pad(2, A, 1) --> A1
+pad(8, '0', '107')     -> '00000107'
+
+def get_ith_number(number):
+  # Find series in which this number will come
+  series_indexes = [(26**(5-i) * 10**i) for i in range(5)]  # [10000, 260000, 676000, ...]
+  num_index_overall = 0
+  while series_indexes[i] < number:
+    num_index_overall += 1
+  
+  
+  # Now, we know which series to look into
+  # To get the index of this number in this series, subtract all prev numbers
+  index_in_series = number - sum(series_indexes[:num_index_overall])
+  
+  # Now index_in_series = 28123
+  
+
+
+********************************
+
+def get_ith_number(number):
+    series_limits = [10**5, 26 * 10**4, 26**2 * 10**3, 26**3 * 10**2, 26**4 * 10, 26**5]
+    
+    # Find which series the number belongs to
+    series = 0
+    while number >= series_limits[series]:
+        number -= series_limits[series]
+        series += 1
+    
+    # Determine the number's letters and digits
+    digits = number % (10 ** (5 - series))  # Remaining digits
+    letters = number // (10 ** (5 - series))  # Remaining letters
+    
+    # Convert letters from base-26 to the alphabet
+    letter_str = ""
+    for i in range(series):
+        letter_str = chr(ord('A') + (letters % 26)) + letter_str
+        letters //= 26
+    
+    # Format digits with leading zeros
+    return f"{letter_str}{digits:0{5-series}d}"
+
+# Test case
+print(get_ith_number(99999))  # 99999
+print(get_ith_number(100000))  # A0000
+print(get_ith_number(1234567))  # B2345
+
+  
+  
+  
+  
+
+
+
+
