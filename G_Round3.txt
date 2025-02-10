@@ -1,0 +1,85 @@
+'''
+Suppose we have products and people can write reviews for them. Our first interest is to classify reviews as being positively or 
+negatively sentimented (assume there are no other options, it’s a pure binary classification). We do not have a lot of training data yet, 
+but from what we have, we discovered the following interesting patterns:
+
+- Exactly half of the reviews are positive.
+- If a review ends with a "!", it is positive with 70% probability (i.e. among all the reviews with an exclamation mark, 
+70% are positive and 30% are negative)
+- If a review has the word "No", it is positive with 10% probability.
+
+A junior engineer found a review, which says "No!" and is confused. Supposing we may only use the patterns above, should our system classify 
+it as positive with probability 70%, because it ends with a "!"? Or should we take into account the fact that the word "No" is present and 
+report a 10%? It can’t be both, right? Could we somehow make systematic use of both observations and come up with a single probability estimate?
+
+
+
+p1 = 0.7 A
+p2 = 0.1 B
+C = +VE 
+
+P(t_pos/overall_pos) = p(t_pos) * p(overall_pos) / P(overall_pos / t_pos)
+
+Case 1:
+p(t_pos) = 0.7
+p(overall_pos) = 0.5
+P(overall_pos / t_pos) = 0.5*0.7
+P(+ | !)
+
+P(+ | (! and no))
+
+P((! and no) | +) = P(! and no) * p(+) /  P(+ | (! and no))
+
+P((! and no) | +) = P(No|+) * P(!|+) * p(+) /  P(+)
+
+P(No,!|+) = P(No|+)P(!|+)
+
+P(No|+) * P(!|+) = P((! and no) | +) *  P(+) /  p(+)
+
+P(+), P(No), P(!), etc
+'''
+
+
+"""
+P(! and no) | +) = P(No|+)P(!|+)
+P(! and no)) = P(No)P(!)
+P(+) = 0.5
+
+
+Suppose we decided to use the following "Naive Bayes" formula for computing the 
+probability of a given review to be positive:
+
+LogOdds(+|review) = LogOdds(+) +
+                    (LogOdds(+|word1) - LogOdds(+)) +
+                    (LogOdds(+|word2) - LogOdds(+)) + ...
+                    
+where
+LogOdds(something) = log(P(something)/(1-P(something)))
+LogOdds(+) is the log-odds of a random review belonging to the positive class,
+LogOdds(+|word) is the log-odds of a review containing the word "word" belonging to the positive class.
+
+We would like to implement the training and inference for this model as the following two functions:
+
+def predict_proba(text: str) -> float:
+  ?
+for predicting the probability a given text is a positive review, and
+
+def fit(texts: np.array, labels: np.array) -> dict:
+  ?
+  
+"""
+def predict_proba(text: str) -> float:
+  for word in text:
+    word_probs[word]
+    
+    
+# outputs a dict mapping word -> LogOdds(+|word) --> word_probs  
+def fit(texts: np.array, labels: np.array) -> dict:
+  for text in texts:
+    for word in text:
+      """
+      p(w) 
+      p(+)
+      p(w/+)
+       ==> LogOdds(+|word1)
+      """
